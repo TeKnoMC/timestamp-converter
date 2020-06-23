@@ -1,7 +1,8 @@
 import React from 'react';
+import { Converter } from './converter';
 
 export class App extends React.Component {
     render() {
-        return <h1>Test</h1>;
+        return <Converter />;
     }
 }
