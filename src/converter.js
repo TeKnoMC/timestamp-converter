@@ -2,10 +2,33 @@ import React from 'react';
 import { DateTypeEnum, TimeConverter } from './timeconverter'
 
 const TimestampOutput = (props) => {
-    return <p>Output: {props.dateStr}</p>
+    return (
+        <table>
+            <thead>
+                <tr>
+                    <th>Timezone</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>UTC</td>
+                    <td>{props.readableDates.utc}</td>
+                </tr>
+                <tr>
+                    <td>Local</td>
+                    <td>{props.readableDates.local}</td>
+                </tr>
+            </tbody>
+        </table>
+    );
 }
 
 const TimestampInput = (props) => {
+    const dropdownOptions = props.timestamps.map((timestampObj, idx) => {
+        return <option value={timestampObj.value} key={idx}>{timestampObj.friendlyName}</option>;
+    });
+
     return (
         <form>
             <label htmlFor="integer">Value:</label>
@@ -17,12 +40,7 @@ const TimestampInput = (props) => {
                 onChange={props.updateMethod}
             />
             <label htmlFor="dateType">Timestamp Format:</label>
-            <select name="dateType" id="dateType" onChange={props.updateMethod}>
-                <option value={DateTypeEnum.EPOCH_SECONDS}>Unix Time (Seconds since unix epoch)</option>
-                <option value={DateTypeEnum.EPOCH_MILLISECONDS}>Unix Milliseconds (Milliseconds since unix epoch)</option>
-                <option value={DateTypeEnum.EPOCH_MICROSECONDS}>Unix Microseconds (Microseconds since unix epoch)</option>
-                <option value={DateTypeEnum.CHROME}>Google Chrome Timestamp</option>
-            </select>
+        <select name="dateType" id="dateType" onChange={props.updateMethod}>{dropdownOptions}</select>
         </form>
     );
 }
@@ -31,8 +49,30 @@ export class Converter extends React.Component {
     state = {
         dateValue: "0",
         dateType: DateTypeEnum.EPOCH_SECONDS,
-        dateStr: ""
+        readableDates: {
+            utc: "",
+            local: ""
+        }
     }
+
+    timestamps = [
+        {
+            value: DateTypeEnum.EPOCH_SECONDS,
+            friendlyName: "Unix Time (Seconds since unix epoch)"
+        },
+        {
+            value: DateTypeEnum.EPOCH_MILLISECONDS,
+            friendlyName: "Unix Milliseconds (Milliseconds since unix epoch)"
+        },
+        {
+            value: DateTypeEnum.EPOCH_MICROSECONDS,
+            friendlyName: "Unix Microseconds (Microseconds since unix epoch)"
+        },
+        {
+            value: DateTypeEnum.CHROME,
+            friendlyName: "WebKit / Google Chrome Timestamp"
+        }
+    ]
 
     updateState = (event) => {
         // Event data
@@ -43,16 +83,16 @@ export class Converter extends React.Component {
 
         // Add changed state + decode with new data
         newState[fieldName] = value;
-        newState.dateStr = TimeConverter.decode(newState.dateType, parseInt(newState.dateValue));
+        newState.readableDates = TimeConverter.decode(newState.dateType, parseInt(newState.dateValue));
 
         this.setState(newState);
     }
 
     render() {
         return (
-            <div class="window">
-                <TimestampInput dateValue={this.state.dateValue} updateMethod={this.updateState}/>
-                <TimestampOutput dateStr={this.state.dateStr} />
+            <div id="window">
+                <TimestampInput dateValue={this.state.dateValue} updateMethod={this.updateState} timestamps={this.timestamps} />
+                <TimestampOutput readableDates={this.state.readableDates} />
             </div>
         );
     }

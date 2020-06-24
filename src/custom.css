@@ -2,11 +2,11 @@ body {
     background-color: beige;
 }
 
-.window {
+#window {
     margin: 40px auto;
     padding: 10px 30px;
 
-    width: 600px;
+    width: 800px;
 
     background-color: white;
     border-radius: 10px;

@@ -6,20 +6,27 @@ export const DateTypeEnum = {
 };
 
 export class TimeConverter {
+    static _formatTimestamp(value) {
+        return {
+            utc: new Date(value).toLocaleString("en-GB", { timeZone: "UTC", timeZoneName: "short" }),
+            local: new Date(value).toLocaleString("en-GB", { timeZoneName: "short" })
+        };
+    }
+
     static epochSecondsDecode(value) {
-        return new Date(value*1000).toString();
+        return this._formatTimestamp(value*1000);
     }
 
     static epochMillisecondsDecode(value) {
-        return new Date(value).toString();
+        return this._formatTimestamp(value);
     }
 
     static epochMicrosecondsDecode(value) {
-        return new Date(value/1000).toString();
+        return this._formatTimestamp(value/1000);
     }
 
     static chromeDecode(value) {
-        
+        return this._formatTimestamp((value - 11644473600000000)/1000);
     }
 
     static decode(dateType, value) {
@@ -31,7 +38,7 @@ export class TimeConverter {
             case DateTypeEnum.EPOCH_MICROSECONDS:
                 return this.epochMicrosecondsDecode(value);
             case DateTypeEnum.CHROME:
-                return `Chrome date ${value}`;
+                return this.chromeDecode(value);
             default:
                 console.log("Error in timeconverter.js: unknown date type selected");
                 break;
