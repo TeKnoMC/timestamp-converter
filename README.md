@@ -1,11 +1,8 @@
-# Date-Time Converter Web App
+# Timestamp Converter
 This small project is a web app designed to convert integer time values into readable dates.
 
-## Currently Supported Time Values
-Null
-
-## Future Supported Time Values
+## Currently Supported Timestamps
 - Unix epoch seconds
 - Unix epoch milliseconds
-- Google Chrome values
-and more
+- Unix epoch microseconds
+- Webkit/Google Chrome values
